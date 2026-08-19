@@ -9,6 +9,7 @@
 5. CRScore 已提出无参考的代码审查评论质量评估，但不标注最小证据充分性。来源：https://aclanthology.org/2025.naacl-long.457/
 6. 代码变更到自然语言生成研究报告代码审查评论中存在较高比例的幻觉，传统文本指标单独检测能力有限。来源：https://aclanthology.org/2025.ijcnlp-long.137/
 7. FSE 2027 Research Track 全文截止为 2026-10-02 AoE，正文与图表上限 18 页，参考文献另 4 页，实行 heavy double-anonymous review，并鼓励匿名复现包。来源：https://conf.researchr.org/track/fse-2027/fse-2027-papers
+8. HalluJudge 官方代码、权重与 143/557 标注集在 2026-08-19 不可公开复用；数据集为 Atlassian RovoDev 内部语料。FSE 2027 的官方 B1 已放弃，diff-only 基线为 EviScope B0。来源：https://arxiv.org/abs/2601.19072 ；`governance/hallujudge_artifact_audit_2026-08-19.md`
 
 ## 术语定义
 
@@ -27,7 +28,7 @@
 2. Diff-only judge 是否在这些主张上产生实质性错误拒绝，尚待实验证明。
 3. Targeted evidence escalation 是否优于 full-context 和 generic top-k RAG，尚待实验证明。
 4. 最低证据层级能否获得足够高的标注一致性，尚待试点证明。
-5. HalluJudge、ContextCRBench 等公开数据和代码的实际可复用范围需要逐项核验。
+5. ContextCRBench 公开数据和代码的实际可复用范围仍待核验。
 
 ## 禁止主张
 

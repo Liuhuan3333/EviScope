@@ -17,7 +17,7 @@
   "paper_object": "claim-level review-time verification benchmark + diff-only construct measurement + targeted evidence escalation",
   "foundation_score": 8.0,
   "proposal_score": 7.8,
-  "next_gate": "2026-08-26 Stage-S progress; 30B still CONTRADICTS matching hookspec.py at L2",
+  "next_gate": "2026-08-26 Stage-S progress; official HalluJudge B1 dropped (no public artifact)",
   "hard_go_no_go": "2026-09-07 adjudicated claims + Stage-V gold subset + oracle improvement",
   "submission_freeze_target": "2026-09-24",
   "primary_rqs": ["RQ2_diff_only_construct_error", "RQ3_targeted_escalation"],
@@ -126,6 +126,20 @@
     ],
     "status": "engineering_smoke_not_gold"
   },
+  "hallujudge_baseline": {
+    "audited_at": "2026-08-19",
+    "audit_file": "governance/hallujudge_artifact_audit_2026-08-19.md",
+    "official_code": false,
+    "official_labels": false,
+    "b1_decision": "official_dropped_no_public_artifact",
+    "status": "artifact_unavailable_not_gold"
+  },
+  "evidence_package_roles": {
+    "registered_at": "2026-08-19",
+    "file": "governance/evidence_package_roles_v0.1.md",
+    "gold": "full nested L0-L3",
+    "method_p": "path-constrained after nested build"
+  },
   "stage_v_pilot": {
     "implemented_at": "2026-08-19",
     "blocked_until": "stage_s_adjudication_frozen",
@@ -149,7 +163,7 @@
     "frozen GitHub issue JSON not collected for linked issues",
     "Stage S pilot adjudication not frozen",
     "EviScope escalation v0.2 reaches L2 on hookspec; 30B still CONTRADICTS the matching spec file",
-    "HalluJudge artifact availability must be verified",
+    "HalluJudge official B1 dropped 2026-08-19: no public code or RovoDev labels",
     "one-command result rebuild not implemented"
   ],
   "scientific_stop_conditions": [
