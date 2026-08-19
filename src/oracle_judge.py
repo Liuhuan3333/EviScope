@@ -81,9 +81,10 @@ def assemble_evidence(
     l1_package_dir: Path | None,
     max_level: str,
     l2_package_dir: Path | None = None,
+    l3_package_dir: Path | None = None,
 ) -> dict[str, Any]:
-    if max_level not in {"L0", "L1", "L2"}:
-        raise OracleJudgeError("oracle judge smoke supports max_level L0, L1, or L2")
+    if max_level not in {"L0", "L1", "L2", "L3"}:
+        raise OracleJudgeError("evidence assembly supports max_level L0, L1, L2, or L3")
     diff_bytes, l0_sha256 = load_l0_diff(snapshot_dir)
     try:
         diff_text = diff_bytes.decode("utf-8")
@@ -102,7 +103,7 @@ def assemble_evidence(
     ]
 
     manifest: dict[str, Any] | None = None
-    if max_level in {"L1", "L2"}:
+    if max_level in {"L1", "L2", "L3"}:
         if l1_package_dir is None:
             raise OracleJudgeError("L1 evaluation requires an L1 evidence package directory")
         manifest_path = l1_package_dir / "manifest.json"
@@ -145,7 +146,7 @@ def assemble_evidence(
             )
 
     l2_manifest: dict[str, Any] | None = None
-    if max_level == "L2":
+    if max_level in {"L2", "L3"}:
         if l2_package_dir is None:
             raise OracleJudgeError("L2 evaluation requires an L2 evidence package directory")
         l2_manifest_path = l2_package_dir / "manifest.json"
@@ -184,6 +185,46 @@ def assemble_evidence(
                 )
             )
 
+    l3_manifest: dict[str, Any] | None = None
+    if max_level == "L3":
+        if l3_package_dir is None:
+            raise OracleJudgeError("L3 evaluation requires an L3 evidence package directory")
+        l3_manifest_path = l3_package_dir / "manifest.json"
+        if not l3_manifest_path.is_file():
+            raise OracleJudgeError(f"L3 package missing manifest.json: {l3_package_dir}")
+        l3_manifest = _load_json(l3_manifest_path)
+        if l3_manifest.get("status") not in {
+            "engineering_smoke_not_gold",
+            "review_time_l3_not_gold",
+            "synthetic_smoke_not_gold",
+        }:
+            raise OracleJudgeError("L3 manifest status is not an allowed engineering smoke status")
+        for record in l3_manifest.get("artifacts", []):
+            if not isinstance(record, dict) or record.get("available") is not True:
+                continue
+            rel = record.get("relative_path")
+            kind = record.get("kind")
+            artifact_id = record.get("artifact_id")
+            path = record.get("path")
+            source_locator = record.get("source_locator")
+            if not all(isinstance(item, str) and item for item in (rel, kind, artifact_id, source_locator)):
+                raise OracleJudgeError("Available L3 artifact record is malformed")
+            if str(rel).endswith(".json"):
+                payload = _load_json(l3_package_dir / rel)
+                content = json.dumps(payload, ensure_ascii=False, indent=2)
+            else:
+                content = _read_text(l3_package_dir / rel)
+            artifacts.append(
+                _artifact_record(
+                    artifact_id,
+                    "L3",
+                    kind if isinstance(kind, str) else "",
+                    path if isinstance(path, str) else "",
+                    source_locator,
+                    content,
+                )
+            )
+
     return {
         "max_level": max_level,
         "l0_sha256": l0_sha256,
@@ -192,6 +233,7 @@ def assemble_evidence(
         "artifacts": artifacts,
         "l1_manifest_status": manifest.get("status") if manifest else None,
         "l2_manifest_status": l2_manifest.get("status") if l2_manifest else None,
+        "l3_manifest_status": l3_manifest.get("status") if l3_manifest else None,
     }
 
 
@@ -215,6 +257,14 @@ def format_judge_user_message(
         "",
         f"Evidence package (max level {evidence['max_level']}):",
     ]
+    if "hookspec.py" in normalized:
+        blocks[6:6] = [
+            "Reminder: this claim is only about hookspec.py. If that file is not "
+            "in the package, return INSUFFICIENT. If hookspec.py contains the "
+            "claimed annotation, return SUPPORTED. Do not CONTRADICT it because "
+            "assertion/__init__.py uses Iterator[str] or another implementation type.",
+            "",
+        ]
     for artifact in evidence["artifacts"]:
         blocks.extend(
             [

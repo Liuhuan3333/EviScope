@@ -104,6 +104,15 @@ python3 scripts/build_l3_evidence.py \
   --output /private/path/l3-evidence/COMMENT_ID
 ```
 
+The progressive verifier walks nested L0-L3 packages and stops at the first
+`SUPPORTED` or `CONTRADICTED` judgment. All-`INSUFFICIENT` through the
+available levels is a final `INSUFFICIENT` with a null minimum evidence
+level. This is engineering smoke, not gold:
+
+```bash
+python3 scripts/run_escalation_smoke.py --dry-run
+```
+
 ## Resource confirmation
 
 1. Create `data/private/` and copy `governance/resources.example.json` to

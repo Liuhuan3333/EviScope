@@ -58,6 +58,9 @@ class OracleJudgeTest(unittest.TestCase):
         message = format_judge_user_message(case["comment_text"], case["oracle_claim"], evidence)
         self.assertIn(case["oracle_claim"]["normalized_text"], message)
         self.assertIn("L0:review-time-diff", message)
+        hook = load_smoke_cases(self.cases_path)["cases"][2]
+        hook_message = format_judge_user_message(hook["comment_text"], hook["oracle_claim"], evidence)
+        self.assertIn("only about hookspec.py", hook_message)
 
     def test_parse_judge_response(self) -> None:
         parsed = parse_judge_response(
@@ -119,7 +122,7 @@ class OracleJudgeTest(unittest.TestCase):
 
         def requester(_model: str, payload: dict, _timeout: float) -> dict:
             user = payload["messages"][1]["content"]
-            if "return statement that passes through util.assertrepr_compare" in user:
+            if "that call is not wrapped in list()" in user:
                 case_key = "pytest-s033-direct-generator-return"
             elif "CullHandler.check() calls self.elements.pop()" in user:
                 case_key = "django-s001-pop-race"

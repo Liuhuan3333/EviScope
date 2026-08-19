@@ -13,7 +13,7 @@
       "comment_text": "Unfortunately we can't change the return type here, it is stable API (see hookspec.py).",
       "oracle_claim": {
         "claim_id": "claim-1",
-        "normalized_text": "The pytest_assertrepr_compare hook implementation contains a return statement that passes through util.assertrepr_compare(...) without list() materialization."
+        "normalized_text": "In src/_pytest/assertion/__init__.py, pytest_assertrepr_compare contains the executable statement return util.assertrepr_compare(...) and that call is not wrapped in list()."
       },
       "smoke_expectation": {
         "L0": "INSUFFICIENT",
@@ -47,7 +47,7 @@
       "comment_text": "Unfortunately we can't change the return type here, it is stable API (see hookspec.py).",
       "oracle_claim": {
         "claim_id": "claim-1",
-        "normalized_text": "The pytest_assertrepr_compare hook specification in src/_pytest/hookspec.py defines the return type as list[str] | None."
+        "normalized_text": "In src/_pytest/hookspec.py only, the pytest_assertrepr_compare hook specification is annotated to return list[str] | None."
       },
       "smoke_expectation": {
         "L0": "INSUFFICIENT",

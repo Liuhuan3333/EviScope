@@ -50,7 +50,7 @@ def main() -> int:
     parser.add_argument(
         "--system-prompt",
         type=Path,
-        default=ROOT / "configs/oracle_judge_smoke_prompt_v0.2.txt",
+        default=ROOT / "configs/oracle_judge_smoke_prompt_v0.3.txt",
     )
     parser.add_argument("--case-id", action="append")
     parser.add_argument("--endpoint")
