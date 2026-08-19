@@ -1,0 +1,70 @@
+{
+  "schema_version": "eviscope.stage-v-input-packet.v0.1",
+  "selection_id": "synthetic-stage-v-cli-demo",
+  "status": "synthetic_fixture_not_gold",
+  "guide_version": "v0.3",
+  "dataset_manifest_sha256": "be56327a3be891ac8435fb8aa728a9a3b5dc0f461d26ded2cf25883e35c7d103",
+  "sample_count": 1,
+  "samples": [
+    {
+      "sample_id": "synthetic-smoke-001",
+      "screening_id": "synthetic-screening-adjudicated-001",
+      "screening_sha256": "84a5e90dc638b0f379798f7d68718623203ad2a789302e17dd185314f6b97881",
+      "comment_text": "Synthetic claim for schema validation only.",
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "normalized_text": "The synthetic claim concerns schema validation.",
+          "source_fragments": [
+            {
+              "start": 0,
+              "end": 15,
+              "text": "Synthetic claim"
+            },
+            {
+              "start": 20,
+              "end": 37,
+              "text": "schema validation"
+            }
+          ]
+        }
+      ],
+      "evidence_levels": {
+        "L0": [
+          {
+            "artifact_id": "L0:review-time-diff",
+            "level": "L0",
+            "kind": "diff",
+            "header": "--- artifact_id=L0:review-time-diff level=L0 kind=diff ---",
+            "content": "diff --git a/example.py b/example.py\n-old\n+new"
+          }
+        ],
+        "L1": [
+          {
+            "artifact_id": "L0:review-time-diff",
+            "level": "L0",
+            "kind": "diff",
+            "header": "--- artifact_id=L0:review-time-diff level=L0 kind=diff ---",
+            "content": "diff --git a/example.py b/example.py\n-old\n+new"
+          },
+          {
+            "artifact_id": "synthetic-file",
+            "level": "L1",
+            "kind": "file_after",
+            "header": "--- artifact_id=synthetic-file level=L1 kind=file_after ---",
+            "content": "def target():\n    return 2\n"
+          }
+        ]
+      },
+      "known_artifact_ids": {
+        "L0": [
+          "L0:review-time-diff"
+        ],
+        "L1": [
+          "L0:review-time-diff",
+          "synthetic-file"
+        ]
+      }
+    }
+  ]
+}

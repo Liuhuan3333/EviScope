@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/eviscope/l2_evidence_package.schema.json",
+  "title": "EviScope L2 evidence package v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "status",
+    "comment_id",
+    "review_head_sha",
+    "merge_base_sha",
+    "l0_sha256",
+    "l1_manifest_sha256",
+    "generation_method",
+    "future_artifacts_allowed",
+    "comment_count",
+    "l1_artifact_count",
+    "artifact_count",
+    "artifacts"
+  ],
+  "properties": {
+    "schema_version": {"const": "eviscope.l2-evidence-package.v0.1"},
+    "status": {
+      "enum": [
+        "engineering_smoke_not_gold",
+        "synthetic_smoke_not_gold",
+        "review_time_l2_not_gold"
+      ]
+    },
+    "comment_id": {"type": "integer", "minimum": 1},
+    "review_head_sha": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "merge_base_sha": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "l0_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "l1_manifest_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "generation_method": {"type": "string", "minLength": 1},
+    "future_artifacts_allowed": {"const": false},
+    "comment_count": {"type": "integer", "minimum": 1},
+    "l1_artifact_count": {"type": ["integer", "null"], "minimum": 0},
+    "artifact_count": {"type": "integer", "minimum": 1},
+    "artifacts": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "artifact_id",
+          "level",
+          "kind",
+          "path",
+          "comment_id",
+          "source_locator",
+          "sha256",
+          "available",
+          "unavailable_reason",
+          "review_time_commit",
+          "relative_path",
+          "byte_length",
+          "binary"
+        ],
+        "properties": {
+          "artifact_id": {"type": "string", "minLength": 1},
+          "level": {"const": "L2"},
+          "kind": {
+            "enum": ["definition", "reference", "call_relation", "import", "test", "configuration"]
+          },
+          "path": {"type": "string"},
+          "comment_id": {"type": ["integer", "null"], "minimum": 1},
+          "source_locator": {"type": "string", "minLength": 1},
+          "sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+          "available": {"type": "boolean"},
+          "unavailable_reason": {"type": ["string", "null"]},
+          "review_time_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+          "relative_path": {"type": ["string", "null"]},
+          "byte_length": {"type": "integer", "minimum": 0},
+          "binary": {"type": "boolean"}
+        }
+      }
+    }
+  }
+}

@@ -985,6 +985,56 @@ def validate_swrbench_review_time_policy(path: Path, data: dict[str, Any]) -> li
     return issues
 
 
+def validate_oracle_judge_smoke_cases(path: Path, data: dict[str, Any]) -> list[Issue]:
+    required = ("schema_version", "status", "guide_version", "notes", "cases")
+    issues = _required(path, data, required, "")
+    issues += _unexpected(path, data, set(required), "")
+    if data.get("status") != "engineering_smoke_not_annotation_not_gold":
+        issues.append(_issue(path, "status", "must remain engineering smoke, not annotation gold"))
+    cases = data.get("cases")
+    if not isinstance(cases, list) or not cases:
+        return issues + [_issue(path, "cases", "must contain at least one case")]
+    ids: set[str] = set()
+    case_fields = {
+        "case_id",
+        "sample_id",
+        "repository_id",
+        "comment_id",
+        "review_head_sha",
+        "comment_text",
+        "oracle_claim",
+        "smoke_expectation",
+        "smoke_rationale",
+    }
+    for index, case in enumerate(cases):
+        loc = f"cases[{index}]"
+        if not isinstance(case, dict):
+            issues.append(_issue(path, loc, "must be an object"))
+            continue
+        issues += _required(path, case, tuple(case_fields), loc)
+        issues += _unexpected(path, case, case_fields, loc)
+        case_id = case.get("case_id")
+        if isinstance(case_id, str) and case_id:
+            if case_id in ids:
+                issues.append(_issue(path, f"{loc}.case_id", "duplicate case_id"))
+            ids.add(case_id)
+        if SHA40.fullmatch(str(case.get("review_head_sha", ""))) is None:
+            issues.append(_issue(path, f"{loc}.review_head_sha", "must be a lowercase 40-character SHA"))
+        if not isinstance(case.get("comment_id"), int) or case.get("comment_id") < 1:
+            issues.append(_issue(path, f"{loc}.comment_id", "must be a positive integer"))
+        claim = case.get("oracle_claim")
+        if isinstance(claim, dict):
+            issues += _required(path, claim, ("claim_id", "normalized_text"), f"{loc}.oracle_claim")
+        expectation = case.get("smoke_expectation")
+        if isinstance(expectation, dict):
+            for level, verdict in expectation.items():
+                if level not in LEVELS:
+                    issues.append(_issue(path, f"{loc}.smoke_expectation.{level}", "must be L0-L3"))
+                if verdict not in VERDICTS:
+                    issues.append(_issue(path, f"{loc}.smoke_expectation.{level}", "must be a registered verdict"))
+    return issues
+
+
 def validate_l1_evidence_package(path: Path, data: dict[str, Any]) -> list[Issue]:
     required = (
         "schema_version",
@@ -1095,6 +1145,7 @@ VALIDATORS: dict[str, Callable[[Path, dict[str, Any]], list[Issue]]] = {
     "eviscope.swrbench-adaptation-protocol.v0.1": validate_swrbench_adaptation_protocol,
     "eviscope.swrbench-review-time-policy.v0.1": validate_swrbench_review_time_policy,
     "eviscope.l1-evidence-package.v0.1": validate_l1_evidence_package,
+    "eviscope.oracle-judge-smoke-cases.v0.1": validate_oracle_judge_smoke_cases,
 }
 
 

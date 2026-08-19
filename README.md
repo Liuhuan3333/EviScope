@@ -78,6 +78,32 @@ python3 scripts/build_l1_evidence.py \
 L1 packages are not gold. They refuse overwrite, hash every artifact, and
 only read merge-base and review-head Git objects named in the L0 metadata.
 
+L2 adds review-time imports, comment-mentioned definitions, changed-file
+symbol references/tests, and configuration. L3 adds a frozen PR dump, linked
+issues, repository documentation at the review head, and `git log` history.
+PR/issue bodies are available only when the frozen JSON `updated_at` is at or
+before the comment timestamp; later dumps are recorded as unavailable rather
+than treated as review-time text:
+
+```bash
+python3 scripts/build_l2_evidence.py \
+  --repository /path/to/clone \
+  --snapshot-dir /private/path/review-snapshots/REVIEW_HEAD \
+  --l1-dir /private/path/l1-evidence/COMMENT_ID \
+  --comments /path/to/inline_comments.json \
+  --comment-id COMMENT_ID \
+  --output /private/path/l2-evidence/COMMENT_ID
+
+python3 scripts/build_l3_evidence.py \
+  --repository /path/to/clone \
+  --snapshot-dir /private/path/review-snapshots/REVIEW_HEAD \
+  --l2-dir /private/path/l2-evidence/COMMENT_ID \
+  --comments /path/to/inline_comments.json \
+  --comment-id COMMENT_ID \
+  --raw-dir /private/path/raw \
+  --output /private/path/l3-evidence/COMMENT_ID
+```
+
 ## Resource confirmation
 
 1. Create `data/private/` and copy `governance/resources.example.json` to

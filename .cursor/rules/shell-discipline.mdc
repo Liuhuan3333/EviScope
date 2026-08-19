@@ -1,0 +1,12 @@
+---
+description: Prevent shell resource exhaustion from too many background sessions
+alwaysApply: true
+---
+
+# Shell Discipline
+
+- **Max 3 background shells at a time.** Before launching a new background shell, check how many are already running. If >= 3, wait for one to finish or kill an old one first.
+- **Never retry a stuck command by opening a new shell.** If a command times out, analyze the root cause first. Do not blindly retry in a new session.
+- **Long or network-dependent commands go to the user's terminal.** Git clone, large fetches, or any command with unpredictable runtime: give the user a copy-paste command instead of running it yourself.
+- **Set realistic timeouts.** Use `block_until_ms` proportional to expected runtime. For simple commands (echo, ls, cat), 10-15 seconds is enough. For builds, 60-120 seconds.
+- **Kill before replacing.** When a shell task needs to be restarted, kill the old process first rather than leaving it as a zombie.

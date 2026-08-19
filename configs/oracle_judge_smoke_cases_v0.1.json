@@ -1,0 +1,60 @@
+{
+  "schema_version": "eviscope.oracle-judge-smoke-cases.v0.1",
+  "status": "engineering_smoke_not_annotation_not_gold",
+  "guide_version": "v0.3",
+  "notes": "Hand-segmented oracle claims for paired L0 vs L1 judge smoke. Expectations are engineering hypotheses, not Stage-V gold.",
+  "cases": [
+    {
+      "case_id": "pytest-s033-direct-generator-return",
+      "sample_id": "S033",
+      "repository_id": "pytest-14523",
+      "comment_id": 3313441593,
+      "review_head_sha": "4f25425ba9429488f7f2a95d58c233d8fd5772b8",
+      "comment_text": "Unfortunately we can't change the return type here, it is stable API (see hookspec.py).",
+      "oracle_claim": {
+        "claim_id": "claim-1",
+        "normalized_text": "The pytest_assertrepr_compare hook implementation contains a return statement that passes through util.assertrepr_compare(...) without list() materialization."
+      },
+      "smoke_expectation": {
+        "L0": "INSUFFICIENT",
+        "L1": "SUPPORTED"
+      },
+      "smoke_rationale": "The unified diff hunk changes signature/docstring but omits the return statement line; L1 enclosing_symbol includes `return util.assertrepr_compare(...)`."
+    },
+    {
+      "case_id": "django-s001-pop-race",
+      "sample_id": "S001",
+      "repository_id": "django-20583",
+      "comment_id": 3329834253,
+      "review_head_sha": "06c46e7dbf8ae7357250f506918ba1ed1896a215",
+      "comment_text": "When running with multiple threads, there can be some races where `.pop()` can be called by multiple threads at the same time before resetting the `self.elements` list, which can cause some `IndexError` in some thread.\nWe should probably either have a thread lock or make `self.elements` thread local. The latter would imply the same behaviour for each thread that we have for each process.",
+      "oracle_claim": {
+        "claim_id": "claim-1",
+        "normalized_text": "CullHandler.check() calls self.elements.pop() on shared instance state without acquiring a lock."
+      },
+      "smoke_expectation": {
+        "L0": "SUPPORTED",
+        "L1": "SUPPORTED"
+      },
+      "smoke_rationale": "Control case: the unified diff includes the CullHandler.check body with pop(); L1 should not be required for a decisive verdict."
+    },
+    {
+      "case_id": "pytest-s033-hookspec-return-type",
+      "sample_id": "S033",
+      "repository_id": "pytest-14523",
+      "comment_id": 3313441593,
+      "review_head_sha": "4f25425ba9429488f7f2a95d58c233d8fd5772b8",
+      "comment_text": "Unfortunately we can't change the return type here, it is stable API (see hookspec.py).",
+      "oracle_claim": {
+        "claim_id": "claim-1",
+        "normalized_text": "The pytest_assertrepr_compare hook specification in src/_pytest/hookspec.py defines the return type as list[str] | None."
+      },
+      "smoke_expectation": {
+        "L0": "INSUFFICIENT",
+        "L1": "INSUFFICIENT",
+        "L2": "SUPPORTED"
+      },
+      "smoke_rationale": "hookspec.py is outside the L0/L1 package; L2 comment-mention retrieval should fetch src/_pytest/hookspec.py at review time."
+    }
+  ]
+}
