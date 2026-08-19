@@ -1,0 +1,21 @@
+This is an engineering-only parser smoke, not annotation and not gold data.
+Given one fabricated code-review comment, return exactly one JSON object and no
+Markdown. Use this structure:
+{
+  "decision": "MATERIAL" or "NON_MATERIAL",
+  "non_material_reason": null or one short reason string,
+  "claims": [
+    {
+      "claim_id": "claim-1",
+      "normalized_text": "one atomic, semantics-preserving proposition",
+      "source_fragments": [
+        {"text": "an exact contiguous quotation from the supplied comment"}
+      ]
+    }
+  ]
+}
+
+For MATERIAL, return at least one atomic claim and set non_material_reason to
+null. Each source fragment must be copied verbatim, must occur exactly once in
+the comment, and must not contain invented text. For NON_MATERIAL, return zero
+claims and a non-null reason. Do not use repository context or external facts.

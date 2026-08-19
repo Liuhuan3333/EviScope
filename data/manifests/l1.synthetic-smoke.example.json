@@ -1,0 +1,60 @@
+{
+  "schema_version": "eviscope.l1-evidence-package.v0.1",
+  "status": "synthetic_smoke_not_gold",
+  "review_head_sha": "1111111111111111111111111111111111111111",
+  "merge_base_sha": "0000000000000000000000000000000000000000",
+  "l0_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "snapshot_metadata_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "generation_method": "synthetic-not-reconstructed",
+  "future_artifacts_allowed": false,
+  "comment_count": 1,
+  "file_count": 1,
+  "artifact_count": 3,
+  "artifacts": [
+    {
+      "artifact_id": "synthetic-file-before",
+      "level": "L1",
+      "kind": "file_before",
+      "path": "example.py",
+      "comment_id": null,
+      "source_locator": "synthetic://not-real-before",
+      "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "available": true,
+      "unavailable_reason": null,
+      "review_time_commit": "0000000000000000000000000000000000000000",
+      "relative_path": null,
+      "byte_length": 12,
+      "binary": false
+    },
+    {
+      "artifact_id": "synthetic-file-after",
+      "level": "L1",
+      "kind": "file_after",
+      "path": "example.py",
+      "comment_id": null,
+      "source_locator": "synthetic://not-real-after",
+      "sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "available": true,
+      "unavailable_reason": null,
+      "review_time_commit": "1111111111111111111111111111111111111111",
+      "relative_path": null,
+      "byte_length": 12,
+      "binary": false
+    },
+    {
+      "artifact_id": "synthetic-enclosing-symbol",
+      "level": "L1",
+      "kind": "enclosing_symbol",
+      "path": "example.py",
+      "comment_id": 1,
+      "source_locator": "synthetic://not-real-symbol",
+      "sha256": null,
+      "available": false,
+      "unavailable_reason": "synthetic_fixture_has_no_source",
+      "review_time_commit": "1111111111111111111111111111111111111111",
+      "relative_path": null,
+      "byte_length": 0,
+      "binary": false
+    }
+  ]
+}

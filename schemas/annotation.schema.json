@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/eviscope/annotation.schema.json",
+  "title": "EviScope independent claim annotation v0.2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "sample_id", "annotator_private_id", "annotation_round", "claims", "completed_at", "guide_version"],
+  "properties": {
+    "schema_version": {"const": "eviscope.annotation.v0.2"},
+    "sample_id": {"type": "string", "minLength": 1},
+    "annotator_private_id": {"type": "string", "minLength": 1},
+    "annotation_round": {"enum": ["independent_a", "independent_b", "reverse_audit", "adjudication"]},
+    "claims": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/claim"}
+    },
+    "completed_at": {"type": "string", "format": "date-time"},
+    "guide_version": {"const": "v0.2"}
+  },
+  "$defs": {
+    "judgment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["level", "verdict", "evidence_ids", "rationale", "confidence"],
+      "properties": {
+        "level": {"enum": ["L0", "L1", "L2", "L3"]},
+        "verdict": {"enum": ["SUPPORTED", "CONTRADICTED", "INSUFFICIENT"]},
+        "evidence_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "rationale": {"type": "string", "minLength": 1},
+        "confidence": {"enum": ["high", "medium", "low"]}
+      }
+    },
+    "claim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["claim_id", "text", "source_span", "materiality", "judgments", "final_verdict", "minimum_evidence_level", "disagreement_codes"],
+      "properties": {
+        "claim_id": {"type": "string", "minLength": 1},
+        "text": {"type": "string", "minLength": 1},
+        "source_span": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["start", "end"],
+          "properties": {
+            "start": {"type": "integer", "minimum": 0},
+            "end": {"type": "integer", "minimum": 1}
+          }
+        },
+        "materiality": {"enum": ["material", "non_material"]},
+        "non_material_reason": {"type": ["string", "null"]},
+        "judgments": {"type": "array", "items": {"$ref": "#/$defs/judgment"}},
+        "final_verdict": {"enum": ["SUPPORTED", "CONTRADICTED", "INSUFFICIENT", "NOT_APPLICABLE"]},
+        "minimum_evidence_level": {"type": ["string", "null"], "enum": ["L0", "L1", "L2", "L3", null]},
+        "issue_type": {"type": ["string", "null"]},
+        "disagreement_codes": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"enum": ["SEGMENTATION_BOUNDARY", "MATERIALITY", "VERDICT", "MINIMUM_LEVEL", "EVIDENCE_SCOPE", "REVIEW_TIME_LEAKAGE", "OTHER"]}
+        },
+        "adjudication_note": {"type": ["string", "null"]}
+      }
+    }
+  }
+}

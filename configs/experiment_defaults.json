@@ -1,0 +1,22 @@
+{
+  "schema_version": "eviscope.experiment-config.v0.1",
+  "evidence_levels": ["L0", "L1", "L2", "L3"],
+  "verdicts": ["SUPPORTED", "CONTRADICTED", "INSUFFICIENT"],
+  "retrieval_budget": {
+    "max_actions": 5,
+    "max_chunks": 12,
+    "max_input_tokens": 12000,
+    "status": "provisional_until_pilot_freeze"
+  },
+  "primary_temperature": 0,
+  "repeat_subset_fraction": 0.15,
+  "splitting_unit": "repository",
+  "external_web_evidence_allowed": false,
+  "future_artifacts_allowed": false,
+  "release_rule": {
+    "all_material_supported": "accept",
+    "any_material_contradicted": "reject",
+    "otherwise": "abstain"
+  }
+}
+

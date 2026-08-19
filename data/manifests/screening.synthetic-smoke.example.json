@@ -1,0 +1,21 @@
+{
+  "schema_version": "eviscope.materiality-screening.v0.3",
+  "screening_id": "synthetic-screening-adjudicated-001",
+  "sample_id": "synthetic-smoke-001",
+  "annotator_private_id": "synthetic-adjudicator-not-a-person",
+  "annotation_round": "adjudication",
+  "decision": "MATERIAL",
+  "non_material_reason": null,
+  "claims": [
+    {
+      "claim_id": "claim-1",
+      "normalized_text": "The synthetic claim concerns schema validation.",
+      "source_fragments": [
+        {"start": 0, "end": 15, "text": "Synthetic claim"},
+        {"start": 20, "end": 37, "text": "schema validation"}
+      ]
+    }
+  ],
+  "completed_at": "2026-08-17T00:00:00Z",
+  "guide_version": "v0.3"
+}

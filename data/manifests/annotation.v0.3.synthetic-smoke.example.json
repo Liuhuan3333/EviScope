@@ -1,0 +1,24 @@
+{
+  "schema_version": "eviscope.annotation.v0.3",
+  "sample_id": "synthetic-smoke-001",
+  "screening_id": "synthetic-screening-adjudicated-001",
+  "screening_sha256": "84a5e90dc638b0f379798f7d68718623203ad2a789302e17dd185314f6b97881",
+  "annotator_private_id": "synthetic-annotator-not-a-person",
+  "annotation_round": "independent_a",
+  "claims": [
+    {
+      "claim_id": "claim-1",
+      "judgments": [
+        {"level": "L0", "verdict": "INSUFFICIENT", "evidence_ids": [], "rationale": "The synthetic diff does not decide the claim.", "confidence": "high"},
+        {"level": "L1", "verdict": "SUPPORTED", "evidence_ids": ["synthetic-file"], "rationale": "A hypothetical file artifact directly supports it.", "confidence": "high"}
+      ],
+      "final_verdict": "SUPPORTED",
+      "minimum_evidence_level": "L1",
+      "issue_type": "synthetic",
+      "disagreement_codes": [],
+      "adjudication_note": null
+    }
+  ],
+  "completed_at": "2026-08-17T00:00:00Z",
+  "guide_version": "v0.3"
+}

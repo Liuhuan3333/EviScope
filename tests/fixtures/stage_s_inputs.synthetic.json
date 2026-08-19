@@ -1,0 +1,18 @@
+{
+  "schema_version": "eviscope.stage-s-input-packet.v0.1",
+  "selection_id": "synthetic-stage-s-cli-demo",
+  "status": "synthetic_fixture_not_gold",
+  "guide_version": "v0.3",
+  "evidence_visible": false,
+  "sample_count": 2,
+  "samples": [
+    {
+      "sample_id": "T001",
+      "comment_text": "This can return null, so the caller can fail."
+    },
+    {
+      "sample_id": "T002",
+      "comment_text": "Thanks for the update."
+    }
+  ]
+}

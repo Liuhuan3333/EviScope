@@ -1,0 +1,67 @@
+{
+  "schema_version": "eviscope.swrbench-adaptation-protocol.v0.1",
+  "status": "candidate_external_validation_source_not_gold",
+  "source": {
+    "repository_url": "https://github.com/ZZR0/SWRench.git",
+    "commit_sha": "67ae1d4395ac05f800d62b0e13678eadeb9fa5c7",
+    "dataset_path": "data/swr_datasets_d5c5.jsonl",
+    "dataset_sha256": "7048e7a92ea9f7a1e6812646694a040582448cc1dd9d515264a4b55071aff95d",
+    "source_code_license": "MIT",
+    "license_sha256": "568f99d2d8ac1f8a41402078816325f7a80d38c3e94432975e398584126ae9bf"
+  },
+  "separation": {
+    "dataset_layer": "EviScope-SWR external validation",
+    "merge_with_eviscope_core": false,
+    "inherit_swr_labels_as_eviscope_gold": false,
+    "estimate_natural_prevalence_from_balanced_swr": false,
+    "report_results_separately": true
+  },
+  "model_visible_allowlist": [
+    "instance_id",
+    "repo",
+    "base_commit",
+    "created_at",
+    "pr_title",
+    "pr_statement",
+    "pr_commits[].sha",
+    "pr_commits[].message",
+    "pr_commits[].diff"
+  ],
+  "model_hidden_fields": [
+    "change_introduced",
+    "changes",
+    "pr_timeline",
+    "all_commits",
+    "pr_commits[].author",
+    "pr_commits[].author_email",
+    "pr_commits[].committer",
+    "pr_commits[].committer_email",
+    "change_discussion",
+    "change_resolve_info",
+    "post_review_commits_and_fixes"
+  ],
+  "conversion_requirements": {
+    "deterministic_comment_event_linkage_required": true,
+    "review_time_snapshot_verification_required": true,
+    "identity_and_email_stripping_required": true,
+    "atomic_claim_resegmentation_required": true,
+    "eviscope_materiality_rescreening_required": true,
+    "independent_a_b_annotation_required": true,
+    "third_human_c_for_all_disagreements_required": true,
+    "model_output_may_be_human_gold": false
+  },
+  "split_and_deduplication": {
+    "split_unit": "repository",
+    "exact_pr_overlap_check_required": true,
+    "near_duplicate_check_required": true,
+    "cross_layer_overlap_report_required": true
+  },
+  "readiness": {
+    "source_integrity_verified": true,
+    "schema_audited": true,
+    "formal_sample_selection_frozen": false,
+    "converted_annotations_exist": false,
+    "eligible_for_model_inference": false,
+    "eligible_for_gold_analysis": false
+  }
+}

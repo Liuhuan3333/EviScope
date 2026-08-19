@@ -1,0 +1,53 @@
+{
+  "schema_version": "eviscope.gate-status.v0.1",
+  "gate": "Gate 0",
+  "target_date": "2026-08-16",
+  "evaluated_at": "2026-08-18",
+  "overall_status": "passed",
+  "criteria": [
+    {
+      "id": "annotator-a",
+      "requirement": "Independent annotator A confirmed",
+      "status": "confirmed",
+      "evidence": "2026-08-18: project lead explicitly confirmed availability as independent annotator A; recorded privately as annotator_A01 without a personal name."
+    },
+    {
+      "id": "annotator-b",
+      "requirement": "Independent annotator B confirmed",
+      "status": "confirmed",
+      "evidence": "2026-08-18: project lead explicitly confirmed a graduate-student colleague as independent annotator B; recorded privately as annotator_B01 without a personal name."
+    },
+    {
+      "id": "adjudicator",
+      "requirement": "Adjudicator confirmed and independent adjudication procedure accepted",
+      "status": "confirmed",
+      "evidence": "2026-08-18: project lead explicitly confirmed a doctoral colleague as third-person adjudicator, recorded privately as adjudicator_C01, and accepted the procedure in which A/B freeze independent outputs and every disagreement, but no agreement item, is sent for third-person adjudication."
+    },
+    {
+      "id": "compute",
+      "requirement": "Laboratory server quota and permitted workload confirmed",
+      "status": "confirmed",
+      "evidence": "2026-08-18: user explicitly confirmed possession of two GPUs for this project. Read-only runtime audit identified GPU IDs 1 and 3 as the devices assigned to container eviscope-qwen3-coder; both are NVIDIA A100-SXM4-80GB. The host has 128 logical CPUs, approximately 1 TiB RAM, and 2549 GiB free on /data/disk1; direct container use requires no Slurm client."
+    },
+    {
+      "id": "model-budget",
+      "requirement": "API/local model access and a pilot budget ceiling confirmed",
+      "status": "confirmed",
+      "evidence": "2026-08-18: user confirmed the Pilot condition uses only the local Qwen service and caps external API expenditure at 0 CNY; secondary-model selection is deferred to the later full experiment and is not part of this Pilot ceiling. Local Qwen/Qwen3-Coder-30B-A3B-Instruct assets occupy 57 GiB with 16 indexed BF16 safetensor shards (61,064,245,248 indexed bytes), and every file passed the stored SHA256SUMS.txt check. Container eviscope-qwen3-coder runs on GPU IDs 1 and 3 with restart_count=0, image digest sha256:bb3c2948540aecfe5f65950ec06b3c080139ba37fd4d236c32ab11872039ebe2, vLLM 0.14.1.dev1+gd68209402, endpoint http://127.0.0.1:18000/v1, served model ID qwen3-coder-30b-a3b, and max_model_len 32768. A one-sample fabricated smoke passed request, JSON parse, and deterministic fragment alignment with result SHA-256 c6bfeaa877a02bb81ac5ebf9a9018ea0d424b5bc5dcf93bbe13af52256870b19; status is engineering_smoke_not_annotation_not_gold."
+    },
+    {
+      "id": "snapshot-tooling",
+      "requirement": "Repository snapshot reconstruction passes a real-PR smoke test",
+      "status": "confirmed",
+      "evidence": "pytest-dev/pytest#14781 review-time reconstruction passed scripts/snapshot_preflight.py with base a3a62a0ebd43ec848b979227421e2b7ba93a9dc9, head 413f59b00aa559643423b2fdbf92c86db74dca58, four changed files, ready=true, and MIT repository license."
+    },
+    {
+      "id": "protocol",
+      "requirement": "Two-stage v0.3 task schemas, annotation guide, semantic validators, synthetic fixtures, and model registry exist and validate",
+      "status": "implemented",
+      "evidence": "2026-08-18: python3 scripts/validate.py --all validated 10 tracked JSON files with 0 issues; 52/52 unit tests passed. Guide v0.3 separates blinded Stage S from frozen-claim Stage V. Validators enforce registered materiality reasons, exact ordered non-overlapping fragments, screening SHA-256 linkage, adjudicated MATERIAL input, frozen claim IDs/order, progressive L0-L3 verdicts, evidence levels, rejection of unregistered Stage-S context/prediction fields, and restriction of the local model smoke to fabricated non-gold inputs. Protocol asset SHA-256: guide 0e4bcfc0475b5630937a6b69e99c280be342dcb1c42b0ef4c294aa0b46a59c5e; screening schema 0051b0d8e7f71a9c5a451ac0b99e028a2a95ce66f5046b1b61829239453c7abe; verdict schema 1cc5527d84a3372fea21e8ba3bbf13ae714630ab949dd8c9012b1dd43d9e7acd; synthetic smoke protocol 49cb31b694852fcc3cdf637092da4058ff1ed8d78d2be288064a58ede331a7a0; synthetic smoke prompt 3ac38244c8935d961082879e83bc864ff2260d8b7dc6bb9efe256c358c7f1052."
+    }
+  ],
+  "decision_rule": "passed only when every mandatory criterion is confirmed or implemented with auditable evidence",
+  "notes": "Gate 0 confirms Pilot prerequisites only. Passing does not convert training or model smoke outputs into gold, authorize model-only labels, or start formal human annotation; the project lead has deferred formal A/B/C execution until it is actually needed."
+}

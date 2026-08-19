@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/eviscope/materiality-screening.v0.3.schema.json",
+  "title": "EviScope materiality and segmentation v0.3",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "screening_id", "sample_id", "annotator_private_id", "annotation_round", "decision", "non_material_reason", "claims", "completed_at", "guide_version"],
+  "properties": {
+    "schema_version": {"const": "eviscope.materiality-screening.v0.3"},
+    "screening_id": {"type": "string", "minLength": 1},
+    "sample_id": {"type": "string", "minLength": 1},
+    "annotator_private_id": {"type": "string", "minLength": 1},
+    "annotation_round": {"enum": ["independent_a", "independent_b", "adjudication"]},
+    "decision": {"enum": ["MATERIAL", "NON_MATERIAL"]},
+    "non_material_reason": {"type": ["string", "null"]},
+    "claims": {"type": "array", "items": {"$ref": "#/$defs/claim"}},
+    "completed_at": {"type": "string", "format": "date-time"},
+    "guide_version": {"const": "v0.3"}
+  },
+  "$defs": {
+    "fragment": {
+      "type": "object", "additionalProperties": false,
+      "required": ["start", "end", "text"],
+      "properties": {"start": {"type": "integer", "minimum": 0}, "end": {"type": "integer", "minimum": 1}, "text": {"type": "string", "minLength": 1}}
+    },
+    "claim": {
+      "type": "object", "additionalProperties": false,
+      "required": ["claim_id", "normalized_text", "source_fragments"],
+      "properties": {
+        "claim_id": {"type": "string", "minLength": 1},
+        "normalized_text": {"type": "string", "minLength": 1},
+        "source_fragments": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/fragment"}}
+      }
+    }
+  }
+}

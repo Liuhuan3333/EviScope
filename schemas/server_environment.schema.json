@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/eviscope/server_environment.schema.json",
+  "title": "Non-secret EviScope server inventory v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "collected_at_utc", "os", "cpu", "memory", "gpus", "tools", "scheduler", "secret_policy"],
+  "properties": {
+    "schema_version": {"const": "eviscope.server-environment.v0.1"},
+    "collected_at_utc": {"type": "string", "format": "date-time"},
+    "os": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["system", "release", "machine"],
+      "properties": {
+        "system": {"type": "string"},
+        "release": {"type": "string"},
+        "machine": {"type": "string"}
+      }
+    },
+    "cpu": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["logical_count", "model_summary"],
+      "properties": {
+        "logical_count": {"type": ["integer", "null"], "minimum": 1},
+        "model_summary": {"type": ["string", "null"]}
+      }
+    },
+    "memory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["total_bytes"],
+      "properties": {"total_bytes": {"type": ["integer", "null"], "minimum": 1}}
+    },
+    "gpus": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "memory_mib", "driver_version", "compute_capability"],
+        "properties": {
+          "name": {"type": "string"},
+          "memory_mib": {"type": "string"},
+          "driver_version": {"type": "string"},
+          "compute_capability": {"type": "string"}
+        }
+      }
+    },
+    "tools": {
+      "type": "object",
+      "additionalProperties": {"type": ["string", "null"]}
+    },
+    "scheduler": {
+      "type": "object",
+      "additionalProperties": {"type": ["string", "null"]}
+    },
+    "secret_policy": {"const": "no environment values, credentials, usernames, hostnames, IPs, SSH config, or process command lines collected"}
+  }
+}

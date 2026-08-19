@@ -1,0 +1,18 @@
+{
+  "schema_version": "eviscope.pilot-manifest.v0.1",
+  "pilot_id": "gate1-template-not-data",
+  "status": "template",
+  "selection": {
+    "languages": ["Python", "Java"],
+    "repository_count": 4,
+    "selection_rule": "Select repositories using the frozen inclusion criteria before observing evidence-level labels."
+  },
+  "targets": {
+    "comments_min": 30,
+    "comments_max": 50,
+    "claims_min": 60
+  },
+  "samples": [],
+  "notes": "Template only. No pilot observation exists yet."
+}
+

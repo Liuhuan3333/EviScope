@@ -1,0 +1,60 @@
+{
+  "schema_version": "eviscope.model-registry.v0.1",
+  "frozen": false,
+  "models": [
+    {
+      "registry_id": "qwen3-coder-30b-a3b-primary",
+      "role": "judge",
+      "model_family": "Qwen3-Coder",
+      "provider": "QwenLM",
+      "exact_model_id": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "access_mode": "local",
+      "endpoint_class": "openai-compatible",
+      "credential_env_var": null,
+      "revision": null,
+      "license": null,
+      "served_by": "vllm",
+      "status": "unconfirmed",
+      "temperature": 0,
+      "seed": null,
+      "max_input_tokens": 32768,
+      "notes": "Primary code-review judge. Start with BF16, tensor-parallel size 2, and 32768 context; freeze local checkpoint revision and vLLM version before Gate 1."
+    },
+    {
+      "registry_id": "qwen3-32b-secondary",
+      "role": "judge",
+      "model_family": "Qwen3",
+      "provider": "QwenLM",
+      "exact_model_id": "Qwen/Qwen3-32B",
+      "access_mode": "local",
+      "endpoint_class": "openai-compatible",
+      "credential_env_var": null,
+      "revision": null,
+      "license": null,
+      "served_by": "vllm",
+      "status": "unconfirmed",
+      "temperature": 0,
+      "seed": null,
+      "max_input_tokens": 32768,
+      "notes": "Secondary general judge for cross-family robustness. Keep the same prompt, evidence budget, and serving precision as the primary where possible."
+    },
+    {
+      "registry_id": "qwen3-8b-smoke",
+      "role": "judge",
+      "model_family": "Qwen3",
+      "provider": "QwenLM",
+      "exact_model_id": "Qwen/Qwen3-8B",
+      "access_mode": "local",
+      "endpoint_class": "openai-compatible",
+      "credential_env_var": null,
+      "revision": null,
+      "license": null,
+      "served_by": "vllm",
+      "status": "unconfirmed",
+      "temperature": 0,
+      "seed": null,
+      "max_input_tokens": 32768,
+      "notes": "Smoke and parser/debug model only. Do not use it as the sole model for the main FSE claims."
+    }
+  ]
+}

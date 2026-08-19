@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/eviscope/pilot_manifest.schema.json",
+  "title": "EviScope Gate 1 pilot manifest v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "pilot_id", "status", "selection", "targets", "samples"],
+  "properties": {
+    "schema_version": {"const": "eviscope.pilot-manifest.v0.1"},
+    "pilot_id": {"type": "string", "minLength": 1},
+    "status": {"enum": ["template", "collecting", "frozen", "complete"]},
+    "selection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["languages", "repository_count", "selection_rule"],
+      "properties": {
+        "languages": {"type": "array", "items": {"enum": ["Python", "Java"]}, "uniqueItems": true},
+        "repository_count": {"type": "integer", "minimum": 1},
+        "selection_rule": {"type": "string", "minLength": 1}
+      }
+    },
+    "targets": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["comments_min", "comments_max", "claims_min"],
+      "properties": {
+        "comments_min": {"type": "integer", "minimum": 30},
+        "comments_max": {"type": "integer", "minimum": 30},
+        "claims_min": {"type": "integer", "minimum": 60}
+      }
+    },
+    "samples": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "notes": {"type": "string"}
+  }
+}

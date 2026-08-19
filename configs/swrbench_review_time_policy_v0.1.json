@@ -1,0 +1,44 @@
+{
+  "schema_version": "eviscope.swrbench-review-time-policy.v0.1",
+  "status": "candidate_reconstruction_policy_not_inference_not_gold",
+  "inputs": {
+    "dataset_sha256": "7048e7a92ea9f7a1e6812646694a040582448cc1dd9d515264a4b55071aff95d",
+    "adaptation_protocol_sha256": "b20742c9b565ade330691780a2fea05461b88d71e277fd0470d1e7084493f6c1",
+    "candidate_adapter_manifest_sha256": "45f040424090823f5cc47966b1d6b3b5b644eb64da108ad3a436437f2d79234a"
+  },
+  "review_time_cutoff": {
+    "rule": "earliest timezone-aware event among comment, review, and review_comment",
+    "event_types": ["comment", "review", "review_comment"],
+    "commit_time_field": "pr_commits[].date",
+    "commit_time_interpretation": "necessary_not_sufficient_for_pr_visibility",
+    "missing_cutoff_action": "quarantine_entire_pr",
+    "any_commit_after_cutoff_action": "quarantine_entire_pr",
+    "non_contiguous_safe_prefix_action": "quarantine_entire_pr"
+  },
+  "integrity_requirements": {
+    "unique_timeline_commit_match_required": true,
+    "message_diff_text_and_diff_equality_required": true,
+    "repository_commit_object_verification_required": true,
+    "base_and_ancestry_verification_required": true,
+    "independent_diff_reconstruction_required": true,
+    "source_timestamps_alone_complete_verification": false
+  },
+  "metadata_redaction": {
+    "email_pattern": "(?i)\\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,}\\b",
+    "email_replacement": "[EMAIL_REDACTED]",
+    "redacted_fields": ["pr_title", "pr_statement", "pr_commits[].message"],
+    "identity_trailer_prefixes": [
+      "Co-authored-by", "Signed-off-by", "Reviewed-by", "Acked-by",
+      "Tested-by", "Reported-by", "Suggested-by"
+    ],
+    "identity_trailer_replacement": "[IDENTITY_TRAILER_REMOVED]",
+    "diff_patch_policy": "preserve_code_literals_and_keep_inference_ineligible"
+  },
+  "output_controls": {
+    "sampling_performed": false,
+    "model_inference_eligible": false,
+    "gold_analysis_eligible": false,
+    "swr_labels_exported": false,
+    "post_review_fields_exported": false
+  }
+}

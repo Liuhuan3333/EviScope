@@ -1,0 +1,13 @@
+{
+  "schema_version": "eviscope.stage-s-synthetic-smoke-protocol.v0.1",
+  "status": "engineering_only_not_annotation_not_gold",
+  "guide_version": "v0.3",
+  "input_scope": "fabricated synthetic fixture only",
+  "selected_sample_ids": [
+    "T001"
+  ],
+  "alignment_rule": "Derive start/end only when fragment text has exactly one verbatim occurrence in the comment. Reject zero or multiple occurrences. Never edit fragment text.",
+  "temperature": 0,
+  "max_tokens": 800,
+  "purpose": "Verify local request, JSON parsing, and deterministic verbatim-fragment alignment only."
+}

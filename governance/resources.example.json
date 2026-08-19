@@ -1,0 +1,70 @@
+{
+  "schema_version": "eviscope.resources.v0.1",
+  "private_working_copy": true,
+  "people": [
+    {
+      "role_id": "principal-investigator",
+      "role": "lead",
+      "name_or_private_id": "UNCONFIRMED",
+      "languages": ["Python", "Java"],
+      "commitment_hours": null,
+      "conflict_of_interest_reviewed": false,
+      "status": "unconfirmed"
+    },
+    {
+      "role_id": "annotator-a",
+      "role": "annotator",
+      "name_or_private_id": "UNCONFIRMED",
+      "languages": [],
+      "commitment_hours": null,
+      "conflict_of_interest_reviewed": false,
+      "status": "unconfirmed"
+    },
+    {
+      "role_id": "annotator-b",
+      "role": "annotator",
+      "name_or_private_id": "UNCONFIRMED",
+      "languages": [],
+      "commitment_hours": null,
+      "conflict_of_interest_reviewed": false,
+      "status": "unconfirmed"
+    },
+    {
+      "role_id": "adjudicator",
+      "role": "adjudicator",
+      "name_or_private_id": "UNCONFIRMED",
+      "languages": [],
+      "commitment_hours": null,
+      "conflict_of_interest_reviewed": false,
+      "status": "unconfirmed"
+    }
+  ],
+  "compute": {
+    "location": "laboratory-server",
+    "status": "reported_available_not_profiled",
+    "scheduler": "UNCONFIRMED",
+    "partitions": [],
+    "gpu_models": [],
+    "gpu_count_available": null,
+    "gpu_memory_gib": null,
+    "storage_quota_gib": null,
+    "walltime_limit_hours": null,
+    "internet_policy": "UNCONFIRMED",
+    "container_runtime": "UNCONFIRMED"
+  },
+  "budget": {
+    "currency": "UNCONFIRMED",
+    "pilot_ceiling": null,
+    "full_experiment_ceiling": null,
+    "retry_reserve_fraction": 0.2,
+    "approved_by": "UNCONFIRMED",
+    "status": "unconfirmed"
+  },
+  "data_governance": {
+    "public_repository_data_only": true,
+    "credential_storage": "server-secret-manager-or-environment-injection",
+    "redistribution_review_owner": "UNCONFIRMED",
+    "status": "unconfirmed"
+  }
+}
+

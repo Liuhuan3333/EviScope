@@ -1,0 +1,50 @@
+{
+  "schema_version": "eviscope.dataset-manifest.v0.1",
+  "dataset_id": "synthetic-schema-smoke-not-for-analysis",
+  "description": "Fabricated record used only to exercise validation; it is not scientific data.",
+  "records": [
+    {
+      "sample_id": "synthetic-smoke-001",
+      "sample_kind": "synthetic_smoke",
+      "provenance": {
+        "forge": "github",
+        "repository": "example/example",
+        "repository_url": "https://github.com/example/example",
+        "license_spdx": "MIT",
+        "pr_number": 1,
+        "base_sha": "0000000000000000000000000000000000000000",
+        "head_sha": "1111111111111111111111111111111111111111",
+        "retrieved_at": "2026-08-14T00:00:00Z"
+      },
+      "review": {
+        "comment_id": "synthetic-comment",
+        "comment_author_type": "human",
+        "generator_registry_id": null,
+        "comment_text": "Synthetic claim for schema validation only.",
+        "review_timestamp": "2026-08-13T00:00:00Z",
+        "path": "example.py",
+        "original_line": 1
+      },
+      "artifacts": [
+        {
+          "artifact_id": "synthetic-diff",
+          "level": "L0",
+          "kind": "diff",
+          "source_locator": "synthetic://not-real",
+          "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+          "available_at": "2026-08-13T00:00:00Z"
+        },
+        {
+          "artifact_id": "synthetic-file",
+          "level": "L1",
+          "kind": "file_after",
+          "source_locator": "synthetic://not-real-file",
+          "sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+          "available_at": "2026-08-13T00:00:00Z"
+        }
+      ],
+      "analysis_eligible": false,
+      "exclusion_reason": "Fabricated schema smoke record"
+    }
+  ]
+}

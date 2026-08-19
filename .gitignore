@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+server_environment.json
+data/private/
+data/snapshots/
+runtime/
+outputs/
+*.key
+*.pem
+.env
+
