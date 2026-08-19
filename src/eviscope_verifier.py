@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import Any, Callable
 
 from eviscope_validation import LEVELS, VERDICTS
+from l2_evidence import extract_comment_paths
 from oracle_judge import (
     OracleJudgeError,
     assemble_evidence,
@@ -30,6 +31,89 @@ class EviScopeVerifierError(RuntimeError):
 
 
 JudgeFn = Callable[[str, dict[str, Any]], dict[str, Any]]
+
+
+def resolve_evidence_ids(cited: list[str], known: set[str]) -> tuple[list[str], list[str]]:
+    """Map judge citations onto package artifact IDs.
+
+    Exact IDs pass through. A unique prefix such as ``L0`` may resolve to
+    ``L0:review-time-diff``. Ambiguous or unknown citations are rejected.
+    """
+    resolved: list[str] = []
+    remapped: list[str] = []
+    unknown: list[str] = []
+    for item in cited:
+        if item.startswith("artifact_id="):
+            item = item[len("artifact_id=") :]
+        if item in known:
+            resolved.append(item)
+            continue
+        matches = sorted(candidate for candidate in known if candidate.startswith(item + ":"))
+        if len(matches) == 1:
+            resolved.append(matches[0])
+            remapped.append(item)
+        else:
+            unknown.append(item)
+    if unknown:
+        raise EviScopeVerifierError(f"cited unknown artifact IDs: {', '.join(unknown)}")
+    return resolved, remapped
+
+
+def _is_l0_artifact(artifact: dict[str, Any]) -> bool:
+    return artifact.get("level") == "L0" or artifact.get("artifact_id") == "L0:review-time-diff"
+
+
+def artifact_mentions_named_path(artifact: dict[str, Any], named_paths: list[str]) -> bool:
+    haystack = " ".join(
+        str(artifact.get(key) or "")
+        for key in ("artifact_id", "path", "source_locator", "kind")
+    ).replace("\\", "/")
+    return any(named.replace("\\", "/") in haystack for named in named_paths)
+
+
+def l0_diff_contains_named_path(artifact: dict[str, Any], named_paths: list[str]) -> bool:
+    content = str(artifact.get("content") or "").replace("\\", "/")
+    return any(named.replace("\\", "/") in content for named in named_paths)
+
+
+def constrain_package(package: dict[str, Any], named_paths: list[str]) -> dict[str, Any]:
+    """Keep L0 plus artifacts whose locator matches a path named by the claim."""
+    if not named_paths:
+        return package
+    kept: list[dict[str, Any]] = []
+    for artifact in package["artifacts"]:
+        if _is_l0_artifact(artifact) or artifact_mentions_named_path(artifact, named_paths):
+            kept.append(artifact)
+    constrained = dict(package)
+    constrained["artifacts"] = kept
+    constrained["artifact_count"] = len(kept)
+    constrained["total_bytes"] = sum(item["byte_length"] for item in kept)
+    constrained["path_constrained"] = True
+    constrained["named_paths"] = named_paths
+    constrained["dropped_artifact_count"] = package["artifact_count"] - len(kept)
+    return constrained
+
+
+def apply_path_constraint(
+    verdict: str,
+    evidence_ids: list[str],
+    package: dict[str, Any],
+    named_paths: list[str],
+) -> tuple[str, str | None]:
+    if not named_paths or verdict not in DECISIVE:
+        return verdict, None
+    by_id = {item["artifact_id"]: item for item in package["artifacts"]}
+    for evidence_id in evidence_ids:
+        artifact = by_id.get(evidence_id)
+        if artifact is None:
+            continue
+        if _is_l0_artifact(artifact):
+            if l0_diff_contains_named_path(artifact, named_paths):
+                return verdict, None
+            continue
+        if artifact_mentions_named_path(artifact, named_paths):
+            return verdict, None
+    return "INSUFFICIENT", "rejected_off_path_citation"
 
 
 def available_levels(
@@ -63,31 +147,40 @@ def escalate(
     if not order:
         raise EviScopeVerifierError("escalate requires at least an L0 package")
 
+    named_paths = extract_comment_paths(str(claim.get("normalized_text") or ""))
     judgments: list[dict[str, Any]] = []
     called: list[str] = []
     for level in order:
-        parsed = judge(level, packages[level])
+        package = constrain_package(packages[level], named_paths)
+        parsed = judge(level, package)
         if parsed.get("verdict") not in VERDICTS:
             raise EviScopeVerifierError(f"{level} judge returned an unknown verdict")
         evidence_ids = parsed.get("evidence_ids")
         if not isinstance(evidence_ids, list) or any(not isinstance(item, str) for item in evidence_ids):
             raise EviScopeVerifierError(f"{level} judge evidence_ids must be a string array")
-        known = {item["artifact_id"] for item in packages[level]["artifacts"]}
-        unknown = [item for item in evidence_ids if item not in known]
-        if unknown:
-            raise EviScopeVerifierError(f"{level} cited unknown artifact IDs: {', '.join(unknown)}")
+        known = {item["artifact_id"] for item in package["artifacts"]}
+        try:
+            evidence_ids, remapped = resolve_evidence_ids(evidence_ids, known)
+        except EviScopeVerifierError as exc:
+            raise EviScopeVerifierError(f"{level} {exc}") from exc
+        raw_verdict = parsed["verdict"]
+        verdict, constraint = apply_path_constraint(raw_verdict, evidence_ids, package, named_paths)
         judgment = {
             "level": level,
-            "verdict": parsed["verdict"],
+            "verdict": verdict,
+            "raw_verdict": raw_verdict,
+            "path_constraint": constraint,
             "evidence_ids": evidence_ids,
+            "remapped_evidence_ids": remapped,
             "rationale": parsed.get("rationale"),
             "confidence": parsed.get("confidence"),
-            "artifact_count": packages[level]["artifact_count"],
-            "total_bytes": packages[level]["total_bytes"],
+            "artifact_count": package["artifact_count"],
+            "total_bytes": package["total_bytes"],
+            "dropped_artifact_count": package.get("dropped_artifact_count", 0),
         }
         judgments.append(judgment)
         called.append(level)
-        if parsed["verdict"] in DECISIVE:
+        if verdict in DECISIVE:
             break
 
     try:
@@ -104,6 +197,7 @@ def escalate(
         "stopped_after": called[-1],
         "levels_called": called,
         "levels_skipped": [level for level in order if level not in called],
+        "named_paths": named_paths,
         "judgments": judgments,
         "future_artifacts_allowed": False,
     }

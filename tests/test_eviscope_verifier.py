@@ -11,6 +11,7 @@ sys.path.insert(0, str(ROOT / "src"))
 from eviscope_verifier import (  # noqa: E402
     EviScopeVerifierError,
     available_levels,
+    constrain_package,
     escalate,
     load_nested_packages,
 )
@@ -121,6 +122,82 @@ class EviScopeVerifierTest(unittest.TestCase):
 
         with self.assertRaises(EviScopeVerifierError):
             escalate("comment", {"claim_id": "c1", "normalized_text": "x"}, packages, judge)
+
+    def test_unique_l0_prefix_is_remapped(self) -> None:
+        packages = self._packages(1)
+
+        def judge(level: str, evidence: dict) -> dict:
+            return {
+                "verdict": "SUPPORTED",
+                "evidence_ids": ["L0"],
+                "rationale": "prefix cite",
+                "confidence": "high",
+            }
+
+        trace = escalate("comment", {"claim_id": "c1", "normalized_text": "x"}, packages, judge)
+        self.assertEqual(["L0:review-time-diff"], trace["judgments"][0]["evidence_ids"])
+        self.assertEqual(["L0"], trace["judgments"][0]["remapped_evidence_ids"])
+
+    def test_hookspec_claim_drops_implementation_files(self) -> None:
+        packages = self._packages(2)
+        claim = self.cases[2]["oracle_claim"]
+        l1 = constrain_package(packages["L1"], ["src/_pytest/hookspec.py"])
+        l2 = constrain_package(packages["L2"], ["src/_pytest/hookspec.py"])
+        l1_ids = {item["artifact_id"] for item in l1["artifacts"]}
+        l2_hay = " ".join(item["artifact_id"] + (item.get("path") or "") for item in l2["artifacts"])
+        self.assertNotIn("file_after:src/_pytest/assertion/__init__.py", l1_ids)
+        self.assertIn("hookspec.py", l2_hay)
+        self.assertGreater(l1["dropped_artifact_count"], 0)
+
+    def test_off_path_l1_contradiction_does_not_stop_escalation(self) -> None:
+        packages = self._packages(2)
+        claim = self.cases[2]["oracle_claim"]
+        called: list[str] = []
+
+        def judge(level: str, evidence: dict) -> dict:
+            called.append(level)
+            hook = next(
+                (
+                    item["artifact_id"]
+                    for item in evidence["artifacts"]
+                    if "hookspec.py" in item["artifact_id"] or "hookspec.py" in (item.get("path") or "")
+                ),
+                None,
+            )
+            if hook:
+                return {
+                    "verdict": "SUPPORTED",
+                    "evidence_ids": [hook],
+                    "rationale": "spec file present",
+                    "confidence": "high",
+                }
+            return {
+                "verdict": "CONTRADICTED",
+                "evidence_ids": ["L0:review-time-diff"],
+                "rationale": "wrong file",
+                "confidence": "high",
+            }
+
+        trace = escalate(self.cases[2]["comment_text"], claim, packages, judge)
+        self.assertIn("L2", called)
+        self.assertEqual("INSUFFICIENT", trace["judgments"][0]["verdict"])
+        self.assertEqual("rejected_off_path_citation", trace["judgments"][0]["path_constraint"])
+        self.assertEqual("SUPPORTED", trace["final_verdict"])
+        self.assertEqual("L2", trace["minimum_evidence_level"])
+
+    def test_artifact_id_prefix_is_stripped(self) -> None:
+        packages = self._packages(1)
+
+        def judge(level: str, evidence: dict) -> dict:
+            return {
+                "verdict": "SUPPORTED",
+                "evidence_ids": ["artifact_id=L0:review-time-diff"],
+                "rationale": "prefixed id",
+                "confidence": "high",
+            }
+
+        trace = escalate("comment", {"claim_id": "c1", "normalized_text": "x"}, packages, judge)
+        self.assertEqual(["L0:review-time-diff"], trace["judgments"][0]["evidence_ids"])
 
 
 if __name__ == "__main__":

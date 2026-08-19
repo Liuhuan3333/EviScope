@@ -19,7 +19,7 @@ from eviscope_verifier import (  # noqa: E402
     judge_from_requester,
 )
 from oracle_judge import load_smoke_cases  # noqa: E402
-from stage_s_tools import sha256_path, write_new_json  # noqa: E402
+from stage_s_tools import StageSToolingError, sha256_path, write_new_json  # noqa: E402
 
 
 def _http_request(_model: str, payload: dict, timeout: float) -> dict:
@@ -113,7 +113,7 @@ def main() -> int:
                 "model": args.model,
                 "records": traces,
             }
-    except (EviScopeVerifierError, OSError) as exc:
+    except (EviScopeVerifierError, StageSToolingError, OSError) as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
         return 1
 

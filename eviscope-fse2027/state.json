@@ -17,7 +17,7 @@
   "paper_object": "claim-level review-time verification benchmark + diff-only construct measurement + targeted evidence escalation",
   "foundation_score": 8.0,
   "proposal_score": 7.8,
-  "next_gate": "2026-08-26 Stage-S progress; live escalation smoke vs per-level oracle",
+  "next_gate": "2026-08-26 Stage-S progress; 30B still CONTRADICTS matching hookspec.py at L2",
   "hard_go_no_go": "2026-09-07 adjudicated claims + Stage-V gold subset + oracle improvement",
   "submission_freeze_target": "2026-09-24",
   "primary_rqs": ["RQ2_diff_only_construct_error", "RQ3_targeted_escalation"],
@@ -103,7 +103,27 @@
     "implemented_at": "2026-08-19",
     "module": "src/eviscope_verifier.py",
     "script": "scripts/run_escalation_smoke.py",
-    "policy": "nested L0-L3 packages; stop at first SUPPORTED or CONTRADICTED; all-INSUFFICIENT yields final INSUFFICIENT and null minimum_evidence_level",
+    "policy": "nested L0-L3 packages; path-named claims keep L0 plus matching locators; stop at first SUPPORTED or CONTRADICTED after off-path citations are coerced to INSUFFICIENT; all-INSUFFICIENT yields final INSUFFICIENT and null minimum_evidence_level",
+    "live_model_runs": [
+      {
+        "version": "v0.1",
+        "completed_at": "2026-08-19",
+        "endpoint": "http://127.0.0.1:18000",
+        "model": "qwen3-coder-30b-a3b",
+        "prompt": "configs/oracle_judge_smoke_prompt_v0.3.txt",
+        "output": "data/private/escalation-smoke-v0.1.json",
+        "notes": "Generator-return L0 INSUFFICIENT then L1 SUPPORTED (skips L2/L3). Django stops at L0 SUPPORTED. Hookspec L0 INSUFFICIENT then L1 CONTRADICTED from assertion/__init__.py, so L2 hookspec.py is never called. Per-level v0.7 had hookspec L1 INSUFFICIENT. Citation prefix L0 remapped to L0:review-time-diff."
+      },
+      {
+        "version": "v0.2",
+        "completed_at": "2026-08-19",
+        "endpoint": "http://127.0.0.1:18000",
+        "model": "qwen3-coder-30b-a3b",
+        "prompt": "configs/oracle_judge_smoke_prompt_v0.3.txt",
+        "output": "data/private/escalation-smoke-v0.2.json",
+        "notes": "Path constraint: hookspec L1 drops 3 implementation artifacts and stays INSUFFICIENT; L2 is reached with hookspec.py only (8 dropped) but 30B still CONTRADICTED while citing definition:comment-mention:hookspec.py. Generator and django unchanged."
+      }
+    ],
     "status": "engineering_smoke_not_gold"
   },
   "stage_v_pilot": {
@@ -128,7 +148,7 @@
     "L3 Python pilot packages built; frozen GitHub issue JSON still missing",
     "frozen GitHub issue JSON not collected for linked issues",
     "Stage S pilot adjudication not frozen",
-    "EviScope escalation live smoke not yet compared to per-level oracle on the 3 frozen claims",
+    "EviScope escalation v0.2 reaches L2 on hookspec; 30B still CONTRADICTS the matching spec file",
     "HalluJudge artifact availability must be verified",
     "one-command result rebuild not implemented"
   ],
